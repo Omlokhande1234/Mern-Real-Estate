@@ -1,5 +1,6 @@
 import User from '../Models/userModel.js'
 import dotenv from 'dotenv'
+import { errorhandler } from '../utils/errorUtil.js'
 dotenv.config()
 
 const cookieOptions={
@@ -11,17 +12,11 @@ export const Signup=async(req,res,next)=>{
     try{
         const{email,username,password}=req.body
         if(!email||!username||!password){
-             return res.status(200).json({
-                  success:false,
-                  message:"All fields are required"
-             })
+             return next(errorhandler(400,"Every field is reqired"))
         }
         const userExists=await User.findOne({email})
         if(userExists){
-                return  res.status(409).json({
-                success:false,
-                message:"User exists alredy"
-                 })
+               return next(errorhandler(400,"User already exists"))
         }
         const user=await User.create({
                username,
@@ -29,10 +24,7 @@ export const Signup=async(req,res,next)=>{
                password
             })
          if(!user){
-            return res.status(400).json({
-                success:false,
-                message:"Registration failed"
-            })
+            return next(errorhandler(400,"Registration failed"))
         }
         await user.save()
         user.password=undefined
@@ -44,10 +36,7 @@ export const Signup=async(req,res,next)=>{
              user
         })
     }catch(e){
-        return res.status(400).json({
-            success:false,
-            message:e.message
-        })
+        return next(errorhandler(400,e.message))
     }
 }
 
