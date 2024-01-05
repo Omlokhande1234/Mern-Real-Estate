@@ -1,8 +1,8 @@
-import express from 'express'
+import app from './app.js'
 import dotenv from 'dotenv'
 dotenv.config()
 import dbConnection from './DatabaseConfig/databaseconfig.js'
-const app=express()
+
 const PORT=process.env.PORT
 app.listen(PORT,async()=>{
     await dbConnection()
