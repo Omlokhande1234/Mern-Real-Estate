@@ -1,6 +1,7 @@
 import User from '../Models/userModel.js';
 import { errorhandler } from '../utils/errorUtil.js';
 import bcrypt from 'bcryptjs'
+import jwt from "jsonwebtoken"
 
 
 const cookieOptions={
@@ -8,6 +9,7 @@ const cookieOptions={
   httpOnly:true,
   secure:true
 }
+
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
   try {
@@ -49,17 +51,28 @@ export const Signin=async(req,res,next)=>{
       if(!email||!password){
         return next(errorhandler(400,"All fields are required"))
       }
-      const user=await User.findOne({email}).select('password')
-      if(!user||!User.comparePassword(password)){
+      const user=await User.findOne({email}).select('+password')
+      if(!user||!bcrypt.compareSync(password,user.password)){
         return next(errorhandler(400,"Invalid Email or Password"));
       }
-      const token=await User.generateJWTToken()
-      User.password=undefined
+      const generateToken=async function(user){
+        return await jwt.sign(
+          {id:user._id,email:user._email},
+          process.env.SECRET,
+          {
+            expiresIn:process.env.JWT_EXPIRY
+          }
+        )
+         
+      }
+      const token=generateToken(user)
+      user.password=undefined
       res.cookie('token',token,cookieOptions)
+     
       res.status(200).json({
         success:true,
         message:"User logged in successfully",
-        User
+        user
       })
     }catch(e){
       return next(errorhandler(400,e.message))

@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.method={
-    generateJWTToken:async function (){
+    generateToken:async function (){
       return await jwt.sign(
         {id:this_id,email:this_email},
         process.env.SECRET,
@@ -41,7 +41,7 @@ userSchema.method={
        
     },
     comparePassword:async function(plainTextPassword){
-      return await bcryot.compare(plainTextPassword,this.password)
+      return await bcrypt.compare(plainTextPassword,this.password)
     }
 }
 
