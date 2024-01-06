@@ -39,6 +39,9 @@ userSchema.method={
         }
       )
        
+    },
+    comparePassword:async function(plainTextPassword){
+      return await bcryot.compare(plainTextPassword,this.password)
     }
 }
 
