@@ -1,50 +1,48 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
+import dotenv from 'dotenv'
+dotenv.config()
+import  jwt  from 'jsonwebtoken';
 
-const userSchema=new mongoose.Schema({
-    username:{
-        type:String,
-        required:true,
-        minLength:[5,'Name must have atleast 5 letters'],
-        maxLength:[30,"Name should be less than 30 letters"],
-        trim:true,
-        unique:true
+
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:[true,"Email is already registered"],
-        lowercase:true
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    password:{
-        type:String,
-        required:true,
-        minLength:[8,"Password must have atleast 8 letters"],
-        maxLength:[30,"Password should have less than 30 characters"],
-        select:false
-    }
-},{
-    timestamps: true //this will add createdAt and updatedAt as a timestamp in the database
-})
-userSchema.pre('save',async function(next){
-    if(!this.isModified('password')){
-        return next()
-    }
-    this.password= await bcrypt.hash(this.password)
-})
+    password: {
+      type: String,
+      required: true,
+      select:false
+    },
+    avatar:{
+      type: String,
+      default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+    },
+  },
+    { timestamps: true }
+);
+
 userSchema.method={
-    generateJWTToken:async function(next){
-        return await this.generateJWTToken.sign(
-            {id:this_id,email:this.email},
-            process.env.SECRET,
-            {
-                expiresIn:JWT_EXPIRY
-            }
-        )
-    },
-    comparePassword:async function(plainPassword){
-        return await bcrypt.compare(plainPassword,this.password)
-
+    generateJWTToken:async function (){
+      return await jwt.sign(
+        {id:this_id,email:this_email},
+        process.env.SECRET,
+        {
+          expiresIn:process.env.JWT_EXPIRY
+        }
+      )
+       
     }
 }
-const User=mongoose.model('User',userSchema)
-export default User
+
+
+const User = mongoose.model('User', userSchema);
+
+export default User;
