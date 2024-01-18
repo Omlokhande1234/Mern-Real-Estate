@@ -1,15 +1,16 @@
 
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { signInStart,signInFailure,signInSuccess } from '../redux/user/userSlice'
 
 
 
 export default function Signup() {
-  const[formData,setFormData]=useState()
+  const[formData,setFormData]=useState({})
   //Used to handle that occurs in the front end
-  const[error,setError]=useState(null)
-  //used to handle loading 
-  const[loading,setLoading]=useState(false)
+  const{loading,error}=useSelector((state)=>state.user)
+  const dispatch=useDispatch()
   const navigate=useNavigate()
   
   //Used to handle change on onchange and to set the form data on every change in the input field
@@ -27,7 +28,7 @@ export default function Signup() {
   //Used to handle the stuffs when the form is submitted
   const handleSubmit=async (e)=>{
     try{
-      setLoading(true)
+      dispatch(signInStart())
       //e.preventDefault used to avoid reload of our page when we submit the data
       e.preventDefault();
       //Here there is no need to write the complete api of our server that we have created each time
@@ -43,22 +44,17 @@ export default function Signup() {
       const data = await res.json();
       console.log(data);
       if(data.success===false){
-        setLoading(false)
-        setError(data.message)
+       dispatch(signInFailure(data.message))
        
         return
       }
-      setLoading(false)
-      //If there is no error and everything works fine or once the error is removed then again
-      //set the error for null
-      setError(null)
-      //Use to navigate from signUp page to sign in once the sign up page is created
+      dispatch(signInSuccess(data))
+     //Here we have directly used the reducer defined in the store
       navigate('/')
       
     }
     catch(error){
-      setLoading(false)
-      setError(error.message)
+     dispatch(signInFailure(error.message))
 
     }
   }
