@@ -11,6 +11,16 @@ const cookieOptions={
   httpOnly:true,
   secure:true
 }
+// const generateToken=async function(user){
+//   return await jwt.sign(
+//     {id:user._id,email:user._email},
+//     process.env.SECRET,
+//     {
+//       expiresIn:process.env.JWT_EXPIRY
+//     }
+//   )
+   
+// }
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
