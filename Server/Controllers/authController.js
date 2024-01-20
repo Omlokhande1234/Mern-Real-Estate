@@ -6,11 +6,11 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
-const cookieOptions={
-  maxAge: 7*24*60*60, // 7 days
-  httpOnly:true,
-  secure:true
-}
+// const cookieOptions={
+//   maxAge: 7*24*60*60, // 7 days
+//   httpOnly:true,
+//   secure:true
+// }
 // const generateToken=async function(user){
 //   return await jwt.sign(
 //     {id:user._id,email:user._email},
@@ -67,19 +67,9 @@ export const Signin=async(req,res,next)=>{
       if(!user||!bcrypt.compareSync(password,user.password)){
         return next(errorhandler(400,"Invalid Email or Password"));
       }
-      const generateToken=async function(user){
-        return await jwt.sign(
-          {id:user._id,email:user._email},
-          process.env.SECRET,
-          {
-            expiresIn:process.env.JWT_EXPIRY
-          }
-        )
-         
-      }
-      const token=generateToken(user)
-      user.password=undefined
-      res.cookie('token',token,cookieOptions)
+      const token=jwt.sign({id:user._id,email:user.email},process.env.SECRET);
+        const {password:pass,...rest}=user._doc
+        res.cookie('token',token,{httpOnly:true}).status(200).json(rest);
      
       res.status(200).json({
         success:true,
@@ -104,18 +94,18 @@ export const google=async (req,res,next)=> {
   try {
       const user=await User.findOne({email:req.body.email})
       if (user) {
-          const token=jwt.sign({id:user._id},process.env.SECRET);
+          const token=jwt.sign({id:user._id,email:user.email},process.env.SECRET);
           const {password:pass,...rest}=user._doc
-          res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest);
+          res.cookie('token',token,{httpOnly:true}).status(200).json(rest);
       } else {
           const generatedPassword=Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8);
           const hashedPassword=bcrypt.hashSync(generatedPassword,10);
           const newUser=new User({username:req.body.name.split(" ").join("").toLowerCase()+Math.random().toString(36).slice(-4),email:req.body.email,password:hashedPassword,avatar:req.body.photo})
           await newUser.save();
-          const token=jwt.sign({id:newUser._id},process.env.SECRET);
+          const token=jwt.sign({id:newUser._id,email:user._email},process.env.SECRET);
           const {password:pass,...rest}=newUser._doc
         
-          res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest);
+          res.cookie('token',token,{httpOnly:true}).status(200).json(rest);
           console.log(newUser._doc)
       }
       
