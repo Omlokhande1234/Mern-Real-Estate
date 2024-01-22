@@ -10,7 +10,7 @@ import {
 import { app } from '../firebase';
 import { updateUserStart,updateUserFailure,updateUserSuccess, signoutUserStart, signoutUserFailure, signoutUserSuccess } from '../redux/user/userSlice';
 import { deleteUserFailure,deleteUserStart,deleteUserSuccess } from '../redux/user/userSlice';
-import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
+import {Link} from 'react-router-dom'
 export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -159,6 +159,7 @@ export default function Profile() {
         onChange={handleChange} className='border p-3 rounded-lg' />
         <button disabled={loading}className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>
           {loading?'loading...':'Update'}</button>
+        <Link className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95' to={'/create-listing'} >Create listing</Link>
       </form>
       <div className='flex justify-between mt-5'>
         <span onClick={handleDeleteUser} className='text-red-700'>Delete account</span>
