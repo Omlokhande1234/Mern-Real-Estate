@@ -29,21 +29,21 @@ const userSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-userSchema.method={
-    generateToken:async function (){
-      return await jwt.sign(
-        {id:this_id,email:this_email},
-        process.env.SECRET,
-        {
-          expiresIn:process.env.JWT_EXPIRY
-        }
-      )
+// userSchema.method={
+//     generateToken:async function (){
+//       return await jwt.sign(
+//         {id:this_id,email:this_email},
+//         process.env.SECRET,
+//         {
+//           expiresIn:process.env.JWT_EXPIRY
+//         }
+//       )
        
-    },
-    comparePassword:async function(plainTextPassword){
-      return await bcrypt.compare(plainTextPassword,this.password)
-    }
-}
+//     },
+//     comparePassword:async function(plainTextPassword){
+//       return await bcrypt.compare(plainTextPassword,this.password)
+//     }
+// }
 
 
 const User = mongoose.model('User', userSchema);

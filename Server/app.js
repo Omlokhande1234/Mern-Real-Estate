@@ -1,6 +1,7 @@
 import express from 'express'
 import authRoutes from './Routes/authRoutes.js'
 import userRoutes from './Routes/userRoutes.js'
+import listingRoutes from './Routes/listingRoutes.js'
 import errorMiddleware from './MiddleWares/errorMiddleware.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -18,6 +19,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use('/api/auth',authRoutes)
 app.use('/api/user',userRoutes)
+app.use('/api/listing',listingRoutes)
 //app.use(useAuthentication())
 
 

@@ -27,7 +27,7 @@ export const updateUser=async(req,res,next)=>{
             },{new:true})
             //seperated the password and rest of the information
             const{password,...rest}=updatedUser._doc
-             res.status(200).json({
+             return res.status(200).json({
                 success:true,
                 message:"user updated successfully",
                 user:rest
