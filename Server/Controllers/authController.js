@@ -82,10 +82,16 @@ export const Signin=async(req,res,next)=>{
     }
 }
 
-export const logout=async(req,res,next)=>{
+export const signout=async(req,res,next)=>{
     try{
+      res.clearCookie('token')
+      return res.status(200).json({
+        success: true,
+        message:'user logged out successfully'
+      })
 
-    }catch(e){
+    }catch(error){
+      next(error)
 
     }
 }
@@ -96,7 +102,7 @@ export const google=async (req,res,next)=> {
       if (user) {
           const token=jwt.sign({id:user._id,email:user.email},process.env.SECRET);
           const {password:pass,...rest}=user._doc
-         res.cookie('token',token,{httpOnly:true}).status(200).json(rest);
+          res.cookie('token',token,{httpOnly:true}).status(200).json(rest);
       } else {
           const generatedPassword=Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8);
           const hashedPassword=bcrypt.hashSync(generatedPassword,10);
@@ -105,7 +111,7 @@ export const google=async (req,res,next)=> {
           const token=jwt.sign({id:newUser._id,email:user._email},process.env.SECRET);
           const {password:pass,...rest}=newUser._doc
         
-           res.cookie('token',token,{httpOnly:true}).status(200).json(rest);
+          res.cookie('token',token,{httpOnly:true}).status(200).json(rest);
           console.log(newUser._doc)
       }
       
