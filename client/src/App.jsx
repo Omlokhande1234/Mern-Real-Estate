@@ -21,8 +21,9 @@ export default function App(){
               <Route path='/profile' element={<Profile/>} />
               <Route path='/create-listing' element={<CreateListing/>}/>
           </Route>
+        </Routes>
           
-      </Routes>
+     
   
        </BrowserRouter>
 }
