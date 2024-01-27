@@ -33,3 +33,26 @@ export const deleteListings=async(req,res,next)=>{
         next(error)
     }
 }
+export const updateListings=async (req,res,next)=>{
+    const listing=await Listing.findById(req.params.id)
+    if (!listing) {
+        return next(errorhandler(404,"The listing was not found"));
+    }
+    if(req.user.id !==listing.userRef){
+        return next(errorhandler(403,"you are not authorized to perform this action"))
+    }
+    try{
+        const updatedListing=await Listing.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {new: true}
+        )
+        res.status(200).json(updatedListing)
+
+
+    }catch(error){
+        next(error)
+        console.log("Error in updating the data")
+    }
+
+}
