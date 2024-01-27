@@ -1,20 +1,15 @@
 import Listing from "../Models/ListingModel.js"
 import { errorhandler } from "../utils/errorUtil.js"
 
-export const createlisting=async(req,res,next)=>{
-    try{
-        const listing=await Listing.create(req.body)
-        res.status(201).json({
-            success:true,
-            message:'created listings successfully',
-            listing
-        })
-
-    }catch(error){
-        next(error)
-
+export const createListing = async (req, res, next) => {
+    try {
+      const listing = await Listing.create(req.body);
+      return res.status(201).json(listing);
+    } catch (error) {
+      next(error);
     }
-}
+  };
+  
 export const deleteListings=async(req,res,next)=>{
     const listing=await Listing.findById(req.params.id)
     if(!listing){
@@ -56,3 +51,14 @@ export const updateListings=async (req,res,next)=>{
     }
 
 }
+export const getListing = async (req, res, next) => {
+    try {
+      const listing = await Listing.findById(req.params.id);
+      if (!listing) {
+        return next(errorhandler(404, 'Listing not found!'));
+      }
+      res.status(200).json(listing);
+    } catch (error) {
+      next(error);
+    }
+  };
