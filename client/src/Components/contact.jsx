@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-//import useSelector
 
 export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null);
@@ -41,8 +40,7 @@ export default function Contact({ listing }) {
           ></textarea>
 
           <Link
-          to={`state
-          mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
+          to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
           className='bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95'
           >
             Send Message          
